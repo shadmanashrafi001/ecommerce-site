@@ -10,18 +10,44 @@ const products = [
     { id: 2, name: 'Product 2', price: 15.00 },
     { id: 3, name: 'Product 3', price: 20.00 },
     { id: 4, name: 'Product 4', price: 25.00 },
-    { id: 5, name: 'Product 5', price: 30.00 },
-    { id: 6, name: 'Product 6', price: 35.00 },
-    { id: 7, name: 'Product 7', price: 40.00 },
-    { id: 8, name: 'Product 8', price: 45.00 },
-    { id: 9, name: 'Product 9', price: 50.00 },
-    { id: 10, name: 'Product 10', price: 55.00 }
+    { id: 5, name: 'Product 5', price: 30.00 }
 ];
 
 // Cart array to hold selected items
 let cart = [];
 // Orders array to hold all placed orders
 let orders = [];
+
+// Function to handle login
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Check if the user exists
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (user) {
+        // Hide login form and show dashboard
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+    } else {
+        alert('Invalid username or password');
+    }
+}
+
+// Function to show Create Order section
+function showCreateOrder() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('create-order').style.display = 'block';
+    displayProducts();
+}
+
+// Function to show Order List section
+function showOrderList() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('order-list').style.display = 'block';
+    displayOrders();
+}
 
 // Function to display products
 function displayProducts() {
@@ -98,14 +124,15 @@ function placeOrder() {
         cart = [];
         displayCart();
 
-        // Show order list
-        displayOrders();
+        alert('Order placed successfully!');
+        // Redirect to dashboard
+        document.getElementById('create-order').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
     }
 }
 
 // Function to display all orders
 function displayOrders() {
-    const orderList = document.getElementById('order-list');
     const ordersDiv = document.querySelector('.orders');
 
     ordersDiv.innerHTML = ''; // Clear previous order list
@@ -113,4 +140,14 @@ function displayOrders() {
     orders.forEach((order, orderIndex) => {
         const orderDiv = document.createElement('div');
         orderDiv.classList.add('order');
-        orderDiv.innerHTML = `<h3>Order ${orderIndex + 1}</h3>
+        let orderDetails = `<h3>Order ${orderIndex + 1}</h3>`;
+        order.forEach(item => {
+            orderDetails += `<p>${item.name} - $${item.price.toFixed(2)} x ${item.quantity}</p>`;
+        });
+        orderDiv.innerHTML = orderDetails;
+        ordersDiv.appendChild(orderDiv);
+    });
+
+    // Show the order list section
+    document.getElementById('order-list').style.display = 'block';
+}
