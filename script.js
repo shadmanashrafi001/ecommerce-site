@@ -20,6 +20,8 @@ const products = [
 
 // Cart array to hold selected items
 let cart = [];
+// Orders array to hold all placed orders
+let orders = [];
 
 // Function to display products
 function displayProducts() {
@@ -89,17 +91,26 @@ function placeOrder() {
     if (cart.length === 0) {
         alert('Your cart is empty!');
     } else {
-        // Show order summary
-        const orderSummary = document.getElementById('order-summary');
-        const orderDetails = document.querySelector('.order-details');
+        // Save the current cart as an order
+        orders.push([...cart]);
 
-        orderDetails.innerHTML = ''; // Clear previous order details
+        // Clear the cart
+        cart = [];
+        displayCart();
 
-        cart.forEach(item => {
-            const orderItem = document.createElement('div');
-            orderItem.textContent = `${item.name} - $${item.price.toFixed(2)} x ${item.quantity}`;
-            orderDetails.appendChild(orderItem);
-        });
+        // Show order list
+        displayOrders();
+    }
+}
 
-        // Show the total price in the order summary
-        const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0
+// Function to display all orders
+function displayOrders() {
+    const orderList = document.getElementById('order-list');
+    const ordersDiv = document.querySelector('.orders');
+
+    ordersDiv.innerHTML = ''; // Clear previous order list
+
+    orders.forEach((order, orderIndex) => {
+        const orderDiv = document.createElement('div');
+        orderDiv.classList.add('order');
+        orderDiv.innerHTML = `<h3>Order ${orderIndex + 1}</h3>
