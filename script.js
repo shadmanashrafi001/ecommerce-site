@@ -1,3 +1,9 @@
+// User data (for demonstration purposes, using static data)
+const users = [
+    { username: 'user1', password: 'password1' },
+    { username: 'user2', password: 'password2' }
+];
+
 // Product data
 const products = [
     { id: 1, name: 'Product 1', price: 10.00 },
@@ -18,12 +24,15 @@ let cart = [];
 // Function to display products
 function displayProducts() {
     const productList = document.querySelector('.product-list');
+    productList.innerHTML = ''; // Clear previous content
+
     products.forEach(product => {
         const productDiv = document.createElement('div');
         productDiv.classList.add('product');
         productDiv.innerHTML = `
             <h3>${product.name}</h3>
             <p>$${product.price.toFixed(2)}</p>
+            <input type="number" id="quantity-${product.id}" value="1" min="1">
             <button onclick="addToCart(${product.id})">Add to Cart</button>
         `;
         productList.appendChild(productDiv);
@@ -33,23 +42,39 @@ function displayProducts() {
 // Function to add product to cart
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
-    cart.push(product);
+    const quantityInput = document.getElementById(`quantity-${productId}`);
+    const quantity = parseInt(quantityInput.value);
+
+    // Check if the product is already in the cart
+    const cartItem = cart.find(item => item.id === productId);
+
+    if (cartItem) {
+        // Update the quantity if the product is already in the cart
+        cartItem.quantity += quantity;
+    } else {
+        // Add new product to the cart
+        cart.push({ ...product, quantity });
+    }
+
     displayCart();
 }
 
 // Function to display cart items
 function displayCart() {
     const cartItems = document.querySelector('.cart-items');
-    cartItems.innerHTML = '';
+    cartItems.innerHTML = ''; // Clear previous content
 
     cart.forEach((item, index) => {
         const cartItem = document.createElement('div');
-        cartItem.innerHTML = `${item.name} - $${item.price.toFixed(2)} <button onclick="removeFromCart(${index})">Remove</button>`;
+        cartItem.innerHTML = `
+            ${item.name} - $${item.price.toFixed(2)} x ${item.quantity} 
+            <button onclick="removeFromCart(${index})">Remove</button>
+        `;
         cartItems.appendChild(cartItem);
     });
 
     // Update total price
-    const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
     document.getElementById('total-price').textContent = totalPrice.toFixed(2);
 }
 
@@ -64,61 +89,17 @@ function placeOrder() {
     if (cart.length === 0) {
         alert('Your cart is empty!');
     } else {
-        alert('Thank you for your order!');
-        cart = [];
-        displayCart();
-    }
-}
+        // Show order summary
+        const orderSummary = document.getElementById('order-summary');
+        const orderDetails = document.querySelector('.order-details');
 
-// Initialize the store
-document.getElementById('place-order').addEventListener('click', placeOrder);
-displayProducts();
+        orderDetails.innerHTML = ''; // Clear previous order details
 
+        cart.forEach(item => {
+            const orderItem = document.createElement('div');
+            orderItem.textContent = `${item.name} - $${item.price.toFixed(2)} x ${item.quantity}`;
+            orderDetails.appendChild(orderItem);
+        });
 
-// User data (for demonstration purposes, using static data)
-const users = [
-    { username: 'user1', password: 'password1' },
-    { username: 'user2', password: 'password2' }
-];
-
-// Function to handle user login
-function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    const user = users.find(user => user.username === username && user.password === password);
-
-    if (user) {
-        // Successful login
-        localStorage.setItem('loggedInUser', username);
-        alert('Login successful!');
-
-        // Show main content
-        document.getElementById('login-form').style.display = 'none';
-        document.querySelector('main').style.display = 'flex';
-    } else {
-        // Failed login
-        alert('Invalid username or password. Please try again.');
-    }
-}
-
-// Function to check if a user is logged in
-function checkLoginStatus() {
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    if (loggedInUser) {
-        // User is logged in, show main content
-        document.getElementById('login-form').style.display = 'none';
-        document.querySelector('main').style.display = 'flex';
-    } else {
-        // User is not logged in, show login form
-        document.getElementById('login-form').style.display = 'block';
-        document.querySelector('main').style.display = 'none';
-    }
-}
-
-// Existing functions...
-
-// Initialize the store and check login status
-document.getElementById('place-order').addEventListener('click', placeOrder);
-displayProducts();
-checkLoginStatus();
+        // Show the total price in the order summary
+        const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0
