@@ -13,7 +13,7 @@ header {
     padding: 1em;
 }
 
-main {
+main, #order-list, #dashboard {
     display: none; /* Initially hidden, shown after login */
     padding: 20px;
 }
@@ -49,6 +49,23 @@ main {
     width: 100%;
     padding: 10px;
     background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dashboard styles */
+#dashboard {
+    width: 300px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+#dashboard button {
+    width: 80%;
+    padding: 10px;
+    margin: 10px;
+    background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
