@@ -105,19 +105,15 @@ main {
     cursor: pointer;
 }
 
-/* Order summary styles */
-#order-summary {
-    width: 45%;
+/* Order list styles */
+#order-list {
+    width: 100%;
     background-color: white;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin-top: 20px;
 }
 
-.order-details {
+.orders {
     margin-bottom: 20px;
-}
-
-.order-summary h2 {
-    margin-top: 0;
 }
